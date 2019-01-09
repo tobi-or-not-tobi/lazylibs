@@ -17,6 +17,14 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "componentlib": [
+        "dist/componentlib"
+      ],
+      "componentlib/*": [
+        "dist/componentlib/*"
+      ]
+    }
   }
 }
