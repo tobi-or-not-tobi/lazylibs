@@ -1,27 +1,28 @@
 # Lazylibs
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.2.0.
+Small library to experiment with lazy loaded routes from external libraries.
 
-## Development server
+Build with angular-cli 7.2
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+## Option 1: build from library code
 
-## Code scaffolding
+The ideal solution is to build the lazy routes from distributed libraries. The libs are build with ng-packagr, following the angular package format.
+This seems only be achievable with two downsides:
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+- a (soft) reference to the library modules must be available in app (see `__fake.ts`). This file should not be referenced, but is requried as otherwise the build process drops an error [see 1]
+- JIT is not supported in this mode. Only `aot` builds are supported.
 
-## Build
+[1] `ERROR in ./src/$$_lazy_route_resource lazy namespace object Module not found: Error: Can't resolve [...]/dist/componentlib/comp-1/componentlib-comp-1.ngfactory.js' in '[...]/lazylibs/src/$$_lazy_route_resource'`
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+## Option 2: build from library source
 
-## Running unit tests
+If we switch our tsconfig paths to the embedded project, we still need to make a reference to the library code (using \_\_fake.ts file), but we can run it both in `jit` and `aot` mode.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+The paths are configured in the main tsconfig:
 
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+```json
+"paths": {
+    "componentlib": ["projects/componentlib"],
+    "componentlib/*": ["projects/componentlib/*"]
+}
+```
